@@ -9,6 +9,5 @@ export default defineConfig({
   plugins: [react()],
   define: {
     'process.env': {}
-  },
-  base: '/FragShare/'
+  }
 });
