@@ -3,25 +3,23 @@ import {
   getAuth, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  signOut,
-  onAuthStateChanged
+  signOut
 } from 'firebase/auth';
 import { 
   getFirestore, 
   doc, 
   setDoc, 
-  getDoc,
-  updateDoc 
+  getDoc
 } from 'firebase/firestore';
 
-// Replace this with your actual Firebase config from the Firebase Console
 const firebaseConfig = {
-  apiKey: "AIzaSyMockKeyForDevelopmentOnly",
-  authDomain: "fragshare-dev.firebaseapp.com",
-  projectId: "fragshare-dev",
-  storageBucket: "fragshare-dev.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
+  apiKey: "AIzaSyDKsggDlWdrSmCPRTGDyT2tH0gMhSzmlZM",
+  authDomain: "fragshare-c0e23.firebaseapp.com",
+  projectId: "fragshare-c0e23",
+  storageBucket: "fragshare-c0e23.firebasestorage.app",
+  messagingSenderId: "983288753121",
+  appId: "1:983288753121:web:7ec3947157f629cbb240a0",
+  measurementId: "G-3P3YF01R3K"
 };
 
 // Initialize Firebase
@@ -29,74 +27,64 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// === MOCK BACKEND FOR DEVELOPMENT WITHOUT REAL CONFIG ===
-// Because we have a fake config above, real Firebase calls will fail.
-// We intercept them with a localStorage mock for the MVP to feel fully functional.
+// === PRODUCTION BACKEND INTEGRATION ===
 
-const MOCK_DELAY = 800;
-
-export const mockSignIn = async (email, password) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
-      if (users[email] && users[email].password === password) {
-        localStorage.setItem('currentUser', email);
-        resolve({ user: { email, uid: users[email].uid } });
-      } else {
-        reject(new Error("Invalid credentials"));
-      }
-    }, MOCK_DELAY);
-  });
+export const signIn = async (email, password) => {
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  localStorage.setItem('currentUser', userCredential.user.email);
+  localStorage.setItem('currentUid', userCredential.user.uid);
+  return userCredential;
 };
 
-export const mockSignUp = async (email, password) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const users = JSON.parse(localStorage.getItem('mockUsers') || '{}');
-      if (users[email]) {
-        reject(new Error("Email already in use"));
-      } else {
-        const uid = 'usr_' + Math.random().toString(36).substr(2, 9);
-        users[email] = { email, password, uid };
-        localStorage.setItem('mockUsers', JSON.stringify(users));
-        localStorage.setItem('currentUser', email);
-        resolve({ user: { email, uid } });
-      }
-    }, MOCK_DELAY);
-  });
+export const signUp = async (email, password) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const uid = userCredential.user.uid;
+  
+  // Initialize new user profile in Firestore DB
+  const defaultProfile = {
+    email: email,
+    usdc: 100000, 
+    frup: 0,
+    fractions: {},
+    yieldEarned: 0,
+    createdAt: new Date().toISOString()
+  };
+  
+  await setDoc(doc(db, "users", uid), defaultProfile);
+  
+  localStorage.setItem('currentUser', email);
+  localStorage.setItem('currentUid', uid);
+  return userCredential;
 };
 
-export const mockSignOut = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      localStorage.removeItem('currentUser');
-      resolve();
-    }, MOCK_DELAY);
-  });
+export const logOut = async () => {
+  await signOut(auth);
+  localStorage.removeItem('currentUser');
+  localStorage.removeItem('currentUid');
 };
 
-export const mockGetProfile = async (uid) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const profiles = JSON.parse(localStorage.getItem('mockProfiles') || '{}');
-      resolve(profiles[uid] || { 
-        name: 'New User', 
-        usdc: 100000, // starting balance
-        frup: 0,
-        fractions: {},
-        yieldEarned: 0
-      });
-    }, MOCK_DELAY);
-  });
+export const getProfile = async (uid) => {
+  if (!uid) return null;
+  const docRef = doc(db, "users", uid);
+  const docSnap = await getDoc(docRef);
+  
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    // If somehow missing, recreate default
+    const defaultProfile = {
+      email: localStorage.getItem('currentUser') || '',
+      usdc: 100000, 
+      frup: 0,
+      fractions: {},
+      yieldEarned: 0
+    };
+    await setDoc(doc(db, "users", uid), defaultProfile);
+    return defaultProfile;
+  }
 };
 
-export const mockSaveProfile = async (uid, data) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const profiles = JSON.parse(localStorage.getItem('mockProfiles') || '{}');
-      profiles[uid] = data;
-      localStorage.setItem('mockProfiles', JSON.stringify(profiles));
-      resolve(true);
-    }, MOCK_DELAY);
-  });
+export const saveProfile = async (uid, data) => {
+  await setDoc(doc(db, "users", uid), data, { merge: true });
+  return true;
 };

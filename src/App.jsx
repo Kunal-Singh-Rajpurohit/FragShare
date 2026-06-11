@@ -8,7 +8,7 @@ import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-r
 import { clusterApiUrl } from '@solana/web3.js';
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-import { mockSignIn, mockSignUp, mockSignOut, mockGetProfile } from './firebase';
+import { signIn, signUp, logOut, getProfile } from './firebase';
 
 import { Buffer } from 'buffer';
 window.Buffer = window.Buffer || Buffer;
@@ -113,8 +113,8 @@ function AuthPage({ isLogin = true }) {
     e.preventDefault();
     setLoading(true); setError("");
     try {
-      if (isLogin) await mockSignIn(email, password);
-      else await mockSignUp(email, password);
+      if (isLogin) await signIn(email, password);
+      else await signUp(email, password);
       navigate("/app");
     } catch (err) { setError(err.message); }
     finally { setLoading(false); }
@@ -164,10 +164,10 @@ function Dashboard() {
 
   useEffect(() => {
     const email = localStorage.getItem('currentUser');
-    if (!email) return navigate('/login');
+    const uid = localStorage.getItem('currentUid');
+    if (!email || !uid) return navigate('/login');
     setUserEmail(email);
-    const uid = JSON.parse(localStorage.getItem('mockUsers') || '{}')[email]?.uid;
-    mockGetProfile(uid).then(p => setProfile(p));
+    getProfile(uid).then(p => setProfile(p));
   }, [navigate]);
 
   if (!profile) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="pixel-font" style={{ fontSize: 24, color: C.mint }}>LOADING RUNTIME...</div></div>;
@@ -191,7 +191,7 @@ function Dashboard() {
         <div className="terminal-card" style={{ padding: 16 }}>
           <div style={{ fontSize: 10, color: C.mint, letterSpacing: 1, marginBottom: 8 }}>[ ACTIVE_IDENTITY ]</div>
           <div style={{ fontSize: 13, fontWeight: 700, textOverflow: 'ellipsis', overflow: 'hidden', marginBottom: 16 }}>{userEmail.split('@')[0]}</div>
-          <button className="btn-secondary" style={{ width: '100%', padding: '8px', fontSize: 12 }} onClick={async () => { await mockSignOut(); navigate('/'); }}>
+          <button className="btn-secondary" style={{ width: '100%', padding: '8px', fontSize: 12 }} onClick={async () => { await logOut(); navigate('/'); }}>
             [ DISCONNECT ]
           </button>
         </div>
