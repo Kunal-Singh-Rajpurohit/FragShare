@@ -39,15 +39,15 @@ function Landing() {
         </div>
         
         <div style={{ display: 'flex', gap: 40, fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, letterSpacing: 1, color: C.textMuted }}>
-          <div style={{ color: C.text, cursor: 'pointer' }}>PRODUCT</div>
-          <div style={{ cursor: 'pointer' }}>ABOUT</div>
-          <div style={{ cursor: 'pointer' }}>DOCS</div>
-          <div style={{ opacity: 0.5 }}>EXPLORER <span style={{ border: `1px solid ${C.border}`, padding: '2px 6px', fontSize: 10 }}>SOON</span></div>
+          <div style={{ color: C.text, cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = C.mint} onMouseLeave={e => e.target.style.color = C.text} onClick={() => window.open('https://github.com/Kunal-Singh-Rajpurohit/FragShare', '_blank')}>PRODUCT</div>
+          <div style={{ cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = C.mint} onMouseLeave={e => e.target.style.color = C.textMuted} onClick={() => window.open('https://github.com/Kunal-Singh-Rajpurohit/FragShare', '_blank')}>ABOUT</div>
+          <div style={{ cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = C.mint} onMouseLeave={e => e.target.style.color = C.textMuted} onClick={() => window.open('https://github.com/Kunal-Singh-Rajpurohit/FragShare', '_blank')}>DOCS</div>
+          <div style={{ opacity: 0.5, cursor: 'not-allowed' }}>EXPLORER <span style={{ border: `1px solid ${C.border}`, padding: '2px 6px', fontSize: 10 }}>SOON</span></div>
         </div>
 
         <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: C.textMuted }}>X</div>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: C.textMuted }}>TELEGRAM</div>
+          <div style={{ cursor: 'pointer', transition: 'color 0.2s', fontSize: 12, fontWeight: 700, letterSpacing: 1, color: C.textMuted }} onMouseEnter={e => e.target.style.color = C.mint} onMouseLeave={e => e.target.style.color = C.textMuted} onClick={() => window.open('https://x.com', '_blank')}>X</div>
+          <div style={{ cursor: 'pointer', transition: 'color 0.2s', fontSize: 12, fontWeight: 700, letterSpacing: 1, color: C.textMuted }} onMouseEnter={e => e.target.style.color = C.mint} onMouseLeave={e => e.target.style.color = C.textMuted} onClick={() => window.open('https://telegram.org', '_blank')}>TELEGRAM</div>
           <button className="btn-primary" style={{ padding: '10px 20px', fontSize: 13 }} onClick={() => navigate('/login')}>ENTER APP</button>
         </div>
       </header>
