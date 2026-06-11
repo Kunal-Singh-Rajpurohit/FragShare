@@ -345,7 +345,7 @@ export default function App() {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <BrowserRouter>
+          <BrowserRouter basename="/FragShare">
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<AuthPage isLogin={true} />} />
