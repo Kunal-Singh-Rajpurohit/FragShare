@@ -31,7 +31,9 @@ jobs:
       - name: Install dependencies
         run: npm install --no-package-lock --legacy-peer-deps
       - name: Build project
-        run: npx vite build --outDir release
+        run: |
+          npx vite build --outDir release
+          cp release/index.html release/404.html
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact

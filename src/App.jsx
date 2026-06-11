@@ -84,7 +84,7 @@ function Landing() {
 
         {/* Right Image */}
         <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', overflow: 'hidden' }}>
-           <img src="/pixel_bg.png" alt="Pixel Real Estate" style={{ height: '90%', objectFit: 'contain', marginRight: '-10%', filter: 'drop-shadow(0 0 40px rgba(82,255,184,0.1))' }} />
+           <img src={`${import.meta.env.BASE_URL}pixel_bg.png`} alt="Pixel Real Estate" style={{ height: '90%', objectFit: 'contain', marginRight: '-10%', filter: 'drop-shadow(0 0 40px rgba(82,255,184,0.1))' }} />
            
            {/* Crosshair target overlay */}
            <div className="crosshair-box" style={{ position: 'absolute', bottom: '20%', right: '20%', background: C.bgLighter, padding: '16px 20px', border: `1px solid ${C.border}` }}>
