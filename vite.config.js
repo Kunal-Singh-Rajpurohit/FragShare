@@ -1,15 +1,14 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    nodePolyfills({
-      include: ['buffer', 'crypto', 'stream', 'util', 'vm'],
-      globals: { Buffer: true, global: true, process: true },
-    }),
-  ],
-  base: '/FragShare/',
-})
+  build: {
+    minify: false,
+    target: 'esnext'
+  },
+  plugins: [react()],
+  define: {
+    'process.env': {}
+  },
+  base: '/FragShare/'
+});
