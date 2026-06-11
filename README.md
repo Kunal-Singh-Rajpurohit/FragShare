@@ -91,4 +91,4 @@ FragShare relies on distributed oracle networks (e.g., Switchboard) to fetch off
 ## 📜 License
 This project is licensed under the MIT License.
 
-*Built by [Your Telegram Username / Name] for the Solana Foundation.*
+
